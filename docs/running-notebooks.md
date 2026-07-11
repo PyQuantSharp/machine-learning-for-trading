@@ -71,6 +71,28 @@ uv run python 11_ml_pipeline/01_ols_inference.py
 
 ---
 
+## Your First Notebook
+
+If you started Jupyter Lab with `docker compose up ml4t`, open
+**http://localhost:8888** in your web browser. The repository's file tree appears
+on the left.
+
+1. In the file browser (left panel), open a chapter folder — e.g.
+   `01_process_is_edge` — and **double-click** a `.ipynb` file to open it.
+2. Run the selected cell with **Shift+Enter** (it runs, then moves to the next
+   cell), or run the whole notebook from the menu: **Run → Run All Cells**.
+3. When a step asks you to run a shell command (for example, downloading data),
+   open a terminal *inside* Jupyter Lab: **File → New → Terminal**. That terminal
+   is already inside the container, at the repo root, with everything installed.
+   It is where Docker readers run the `python …` commands shown in this guide —
+   type `python …` directly (drop the `uv run` prefix; there is no `uv` in the
+   container).
+
+You do **not** need a separate terminal window for the Docker workflow — the
+Jupyter Lab terminal tile is where the commands below run.
+
+---
+
 ## Notebook Format
 
 Notebooks use **Jupytext percent format**: the source of truth is the `.py` file, and `.ipynb` is generated from it.
@@ -260,11 +282,18 @@ Notebooks require downloaded datasets. See [`data/README.md`](../data/README.md)
 **Quick start with free data:**
 
 ```bash
-# Download ETF data (Yahoo Finance, no API key needed)
-uv run python data/etfs/market/download.py
+# Local uv setup:
+uv run python data/etfs/market/download.py       # ETF data (Yahoo Finance, no API key)
+uv run python data/download_all.py --free-only   # all free datasets
+```
 
-# Download all free datasets
-uv run python data/download_all.py --free-only
+**Docker readers:** run the *same* commands in the Jupyter Lab terminal
+(**File → New → Terminal**), without the `uv run` prefix — there is no host
+Python on the Docker path:
+
+```bash
+python data/etfs/market/download.py
+python data/download_all.py --free-only
 ```
 
 Some datasets require API keys (set in `.env`):

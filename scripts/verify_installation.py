@@ -234,7 +234,8 @@ def check_causal():
     check_import(cat, "econml", "econml")
     check_import(cat, "causalml", "causalml")
     check_import(cat, "tigramite", "tigramite")
-    check_import(cat, "causalimpact", "pycausalimpact")
+    # tfcausalimpact (BSTS, Ch15 NB06) lives in the py312 image only; pycausalimpact
+    # was removed (2020-dead). Not part of the core ml4t environment — do not check here.
     check_import(cat, "causallearn", "causal-learn")
     check_import(cat, "linearmodels", "linearmodels")
 

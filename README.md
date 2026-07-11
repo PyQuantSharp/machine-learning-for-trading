@@ -16,28 +16,13 @@ strategy you can actually run, and keep running, in a live market.
   and [six production Python libraries](https://ml4trading.io/libraries/)
   that facilitate substantial parts of the workflow.
 
-<p align="center">
-  <a href="https://amzn.to/4eigy2F"><img src="assets/cover.png" width="45%" alt="Machine Learning for Trading, 3rd Edition"></a>
-</p>
-
-## 🎓 New: Live Courses & Lightning Lessons
-
-For the first time, the third edition comes with a **live cohort course**, hands-on **workshops**, and free
-**lightning lessons** taught by Stefan on [Maven](https://maven.com/stefan-jansen) — full schedule on the
-[courses page](https://ml4trading.io/courses/).
-
-- **▶ [Machine Learning for Trading: From Research to Production](https://maven.com/stefan-jansen/research-to-production)**
-  — the flagship live cohort course: take a research idea all the way to a deployed, monitored strategy, working
-  through the book's end-to-end workflow with direct feedback. **The first cohort starts Monday, July 6, 2026 —
-  enrollment closes Friday, July 3.**
-- **[Getting Stuff Done with Coding Agents](https://maven.com/p/8394ac/getting-stuff-done-with-coding-agents?utm_medium=ll_share_link&utm_source=instructor)**
-  — a free lightning lesson on putting coding agents to work.
-- **[Building Multi-Agent Forecasting Systems](https://maven.com/stefan-jansen/forecasting-agents)**
-  — a hands-on workshop on engineering the forecasting-agent loop: building auditable, debate-driven multi-agent
-  systems for financial research.
+> For the first time, we are offering [live cohort courses](https://ml4trading.io/courses/), plus free lightning
+> lessons on [multi-agent systems](https://maven.com/p/6c2609/build-multi-agent-systems-you-can-audit) and
+> [From Trading Idea to Validated Strategy](https://maven.com/p/7a8c60/from-trading-idea-to-validated-strategy?utm_medium=ll_share_link&utm_source=instructor)
+> are coming up on **June 24, 2026**.
 
 <p align="center">
-  <a href="https://youtu.be/Ksxv9QVZSOo"><img src="assets/course-trailer.jpg" width="60%" alt="Watch the course overview: Machine Learning for Trading — From Research to Production"></a>
+  <a href="https://amzn.to/4eigy2F"><img src="assets/cover.jpeg" width="45%" alt="Machine Learning for Trading, 3rd Edition"></a>
 </p>
 
 ---
@@ -84,24 +69,24 @@ and visualization stack.
 
 ### Nine Case Studies
 
-The structural centerpiece of the third edition is **nine case studies** that run the length of the
+The structural centerpiece of the third edition is **[nine case studies](case_studies/)** that run the length of the
 book. ETFs, crypto
 perpetuals, intraday equities, options, FX, futures, and equity factor panels are each carried through the *same*
 pipeline — from raw data and labels to features, models, backtests, costs, risk overlays, and a final deployment
 assessment. One disciplined process applied to nine very different markets shows where it works, where it breaks, and
 why.
 
-| Case Study               | Asset Class        | Frequency | What It Explores                                                             |
-|--------------------------|--------------------|-----------|------------------------------------------------------------------------------|
-| ETFs                     | Multi-asset ETFs   | Daily     | Cross-asset momentum and mean-reversion across 100 ETFs                      |
-| Crypto Perps             | Crypto             | 8-hourly  | Funding-rate arbitrage on perpetual futures                                  |
-| NASDAQ-100               | Equities           | 15-min    | Intraday microstructure signals from order flow and the LOB                  |
-| S&P 500 Equity + Options | Equities + Options | Daily     | Equity selection enhanced with implied-volatility features                   |
-| US Firm Characteristics  | Equities           | Monthly   | Firm-level characteristics panel (size, value, momentum, quality)            |
-| FX Pairs                 | FX                 | Daily     | Carry and momentum across major currency pairs                               |
-| CME Futures              | Futures            | Daily     | Term-structure and roll-yield signals across commodity and financial futures |
-| S&P 500 Options          | Options            | Daily     | Options-only strategies (straddles, delta-hedged positions)                  |
-| US Equities              | Equities           | Daily     | Broad cross-section of US stocks with classic factor exposures               |
+| Case Study                                                              | Asset Class        | Frequency | What It Explores                                                             |
+|-------------------------------------------------------------------------|--------------------|-----------|------------------------------------------------------------------------------|
+| [ETFs](case_studies/etfs/)                                              | Multi-asset ETFs   | Daily     | Cross-asset momentum and mean-reversion across 100 ETFs                      |
+| [Crypto Perps](case_studies/crypto_perps_funding/)                      | Crypto             | 8-hourly  | Funding-rate arbitrage on perpetual futures                                  |
+| [NASDAQ-100](case_studies/nasdaq100_microstructure/)                    | Equities           | 15-min    | Intraday microstructure signals from order flow and the LOB                  |
+| [S&P 500 Equity + Options](case_studies/sp500_equity_option_analytics/) | Equities + Options | Daily     | Equity selection enhanced with implied-volatility features                   |
+| [US Firm Characteristics](case_studies/us_firm_characteristics/)        | Equities           | Monthly   | Firm-level characteristics panel (size, value, momentum, quality)            |
+| [FX Pairs](case_studies/fx_pairs/)                                      | FX                 | Daily     | Carry and momentum across major currency pairs                               |
+| [CME Futures](case_studies/cme_futures/)                                | Futures            | Daily     | Term-structure and roll-yield signals across commodity and financial futures |
+| [S&P 500 Options](case_studies/sp500_options/)                          | Options            | Daily     | Options-only strategies (straddles, delta-hedged positions)                  |
+| [US Equities](case_studies/us_equities_panel/)                          | Equities           | Daily     | Broad cross-section of US stocks with classic factor exposures               |
 
 ### 112 Primer Topics
 
@@ -145,6 +130,20 @@ multiple-testing errors. Each category links to its full set; a few skills show 
   readiness.
 - [Production](https://ml4trading.io/skills/): 2 skills, live trading and monitoring & alerting.
 
+### Courses
+
+[Cohort-based courses](https://ml4trading.io/courses/) on [Maven](https://maven.com/stefan-jansen) that work through
+the material live, with direct feedback:
+
+- [Machine Learning for Trading: From Research to Production](https://maven.com/stefan-jansen/research-to-production):
+  take a research idea all the way to a deployed, monitored strategy.
+- [Building Multi-Agent Forecasting Systems](https://maven.com/stefan-jansen/forecasting-agents):
+  design auditable multi-agent systems for financial research.
+
+Each course runs as a scheduled cohort; the links above always point to the next one, where you can enroll or join the
+waitlist. *Stay current between cohorts with the
+twice-weekly [**Insights** newsletter](https://insights.ml4trading.io/).*
+
 ---
 
 ## The ML4T Libraries
@@ -163,8 +162,8 @@ the workflow:
 
 ---
 
-An introduction and a closing chapter bookend six workflow-aligned parts. Chapter titles link to their guides as
-each part is published; the rest are added part by part over the coming weeks.
+An introduction and a closing chapter bookend six workflow-aligned parts. Each chapter title links to its guide;
+notebooks are added directory by directory as they are finalized.
 
 ## Introduction
 
@@ -239,30 +238,30 @@ sentiment, financial NER fine-tuning, and news-return signal construction.
 
 Five model families applied to the same nine case studies, each building on the linear baseline.
 
-### 11. The ML Pipeline
+### [11. The ML Pipeline](11_ml_pipeline/)
 
 Regularized linear models (Ridge, LASSO, Elastic Net) as the baseline every later model must beat. Logistic
 regression for direction, SHAP interpretability, conformal prediction for uncertainty, and a cross-dataset
 comparison across all nine case studies.
 
-### 12. Gradient Boosting and Advanced Tabular Models
+### [12. Gradient Boosting and Advanced Tabular Models](12_gradient_boosting/)
 
 XGBoost, LightGBM, and CatBoost with Optuna multi-objective tuning, plus deep-learning tabular alternatives (TabPFN,
 TabM). TreeSHAP explainability and cross-dataset results, where gradient boosting is the strongest tabular model in
 most case studies.
 
-### 13. Deep Learning for Time Series
+### [13. Deep Learning for Time Series](13_dl_time_series/)
 
 LSTM, N-BEATS, Transformers (PatchTST, iTransformer, TFT), TSMixer, TCN, and Mamba, set against the LTSF-Linear
 debate. A practitioner selection framework and cross-dataset evidence on when deep learning helps and when simpler
 models suffice.
 
-### 14. Latent Factor Models
+### [14. Latent Factor Models](14_latent_factors/)
 
 PCA eigenportfolios, IPCA with time-varying loadings, conditional and supervised autoencoders, adversarial SDF
 estimation, and yield-curve decomposition — with cross-dataset results on when latent factors add predictive value.
 
-### 15. Causal Machine Learning
+### [15. Causal Machine Learning](15_causal_estimation/)
 
 Double Machine Learning for isolating factor treatment effects, Bayesian Structural Time Series for event impact, and
 causal discovery (PCMCI, NOTEARS, VAR-LiNGAM), applied across the nine case studies.
@@ -271,30 +270,30 @@ causal discovery (PCMCI, NOTEARS, VAR-LiNGAM), applied across the nine case stud
 
 From predictions to deployable strategies — backtesting, portfolio construction, costs, risk, and synthesis.
 
-### 16. Strategy Simulation
+### [16. Strategy Simulation](16_strategy_simulation/)
 
 Backtesting as falsification: trading-protocol specification, vectorized vs event-driven engines, an ETF baseline
 strategy, core metric reporting, regime diagnostics, and strategy-level overfitting control (Deflated Sharpe Ratio,
 Rademacher Anti-Serum, White's Reality Check).
 
-### 17. Portfolio Construction
+### [17. Portfolio Construction](17_portfolio_construction/)
 
 From scores to portfolios: mean-variance optimization and its pitfalls, Hierarchical Risk Parity, the Kelly
 criterion, conformal position sizing, deep portfolio allocation, and a controlled allocator comparison across case
 studies.
 
-### 18. Transaction Costs
+### [18. Transaction Costs](18_transaction_costs/)
 
 Cost taxonomy, spread estimation, market-impact calibration, execution algorithms (VWAP, TWAP, Almgren-Chriss
 optimal execution), transaction-cost analysis, and practical guardrails — with breakeven costs that vary widely by
 asset class.
 
-### 19. Risk Management
+### [19. Risk Management](19_risk_management/)
 
 VaR/CVaR tail measurement, drawdown and path-risk controls, factor and sector decomposition, stress testing,
 adaptive risk overlays, deep hedging, and kill switches. Overlay effectiveness turns out to be strategy-specific.
 
-### 20. Strategy Synthesis
+### [20. Strategy Synthesis](20_strategy_synthesis/)
 
 What nine experiments reveal about translating ML predictions into strategies: IC–Sharpe decorrelation, Fundamental
 Law diagnostics, the model-family cascade, cost-survival analysis, holdout failure modes, and a practitioner's
@@ -304,24 +303,24 @@ decision framework.
 
 Reinforcement learning, large language models, knowledge graphs, and autonomous agents for finance.
 
-### 21. Reinforcement Learning for Execution and Hedging
+### [21. Reinforcement Learning for Execution and Hedging](21_rl_execution_hedging/)
 
 MDP formulation for finance, DQN/PPO/SAC algorithms, optimal execution, market making with inventory management, deep
 hedging with PFHedge, inverse RL for strategy recovery, and the sim-to-real gap.
 
-### 22. RAG for Financial Research
+### [22. RAG for Financial Research](22_rag_financial_research/)
 
 Retrieval-augmented generation grounded in SEC filings: ingestion, domain-specific embeddings, hybrid retrieval with
 re-ranking, constraint-based prompting, RAG evaluation and failure diagnostics, and the transition to agentic
 workflows.
 
-### 23. Knowledge Graphs
+### [23. Knowledge Graphs](23_knowledge_graphs/)
 
 When graphs earn their infrastructure cost: KG construction from SEC filings, Graph RAG for multi-hop reasoning,
 graph features for ML (GNN embeddings, centrality, community detection), financial networks, and temporal-leakage
 prevention.
 
-### 24. Autonomous Agents
+### [24. Autonomous Agents](24_autonomous_agents/)
 
 Agent architectures (ReAct, Tree of Thoughts, Reflexion), memory systems, tool contracts, the engineering stack
 (LangGraph, Claude SDK), a stateful equity-research agent, multi-agent forecasting with adversarial debate, and
@@ -331,19 +330,19 @@ production reliability.
 
 Taking strategies live — trading systems and the operational infrastructure that keeps them running.
 
-### 25. Live Trading Systems
+### [25. Live Trading Systems](25_live_trading/)
 
 A unified framework bridging research and production: Interactive Brokers and Alpaca integration, managed platforms
 (QuantConnect), order-lifecycle management, pipeline verification, and operational readiness.
 
-### 26. MLOps and Governance
+### [26. MLOps and Governance](26_mlops_governance/)
 
 An ML failure taxonomy (pipeline divergence vs performance decay), drift detection, safe model rollout, circuit
 breakers, feature stores, experiment tracking, and the MLOps infrastructure financial ML systems need.
 
 ## Conclusion
 
-### 27. The Systematic Edge
+### [27. The Systematic Edge](27_systematic_edge/)
 
 The systematic philosophy, quant career paths, learning resources, research frontiers, and how to build your own
 edge. The closing bookend to Chapter 1: the process is the edge.
@@ -376,8 +375,18 @@ reboot is not optional.
 uv run python data/download_all.py --free-only
 ```
 
+Docker readers run this in the Jupyter Lab terminal (**File → New → Terminal**) as
+`python data/download_all.py --free-only` — there is no host Python on the Docker path.
+
 The **[data guide](data/README.md)** documents every dataset, API-key setup, the loaders, and storage tiers (≈70 MB
 free tier up to ≈7 GB full).
+
+**(Optional) pre-computed results.** To explore the Ch11–20 case-study results without retraining, download the model
+artifacts:
+
+```bash
+uv run python scripts/download_artifacts.py
+```
 
 **Run notebooks.** Notebooks are paired [Jupytext](https://jupytext.readthedocs.io/) files (`.py` source + generated
 `.ipynb`). Run a quick smoke test, or open Jupyter Lab:
@@ -387,8 +396,8 @@ uv run python 01_process_is_edge/factor_regimes.py
 docker compose up -d ml4t # then open http://localhost:8888
 ```
 
-See the guide to **[running notebooks](docs/running-notebooks.md)** for Papermill parameters and the experiment
-workflow.
+See the guide to **[running notebooks](docs/running-notebooks.md)** for case-study pipelines, Papermill parameters, and
+the experiment workflow.
 
 ### Docker images
 
@@ -403,15 +412,27 @@ preamble. Full details in the **[Docker environments guide](envs/README.md)**.
 | `benchmark`  | Database clients (TimescaleDB, ClickHouse, QuestDB, InfluxDB)    | Ch02 storage benchmarks |
 | `rapids`     | RAPIDS cuML + LightGBM CUDA (build locally)                      | One Ch12 GPU benchmark  |
 
----
-
-## Releases
-
-New chapters and notebooks are added over the coming weeks. ⭐ Watch or star the repo to follow along, and subscribe to
-the twice-weekly [**Insights** newsletter](https://insights.ml4trading.io/).
-
 **Looking for the second edition?** It is complete and stable on the `second-edition` branch —
 `git checkout second-edition`, and everything is exactly where the book describes it.
+
+---
+
+## Repository Layout
+
+```text
+machine-learning-for-trading/
+├── 01_process_is_edge/ … 27_systematic_edge/   27 chapters — Jupytext .py + .ipynb, each with a README
+├── case_studies/     nine datasets carried through the full pipeline (Ch6 → Ch20)
+├── data/             download scripts and loaders for every dataset      → data/README.md
+├── utils/            shared config, paths, styling, modeling, and CV code → utils/README.md
+├── scripts/          reader utilities (install check, notebook sync, artifacts) → scripts/README.md
+├── tests/            Papermill notebook execution + unit guards, run in CI → tests/README.md
+├── envs/             Dockerfiles for every image                          → envs/README.md
+├── docs/             installation and notebook-execution guides
+├── docker-compose.yml    all Docker services
+├── pyproject.toml · uv.lock    pinned dependencies (uv)
+└── matplotlibrc      figure styling, auto-applied from the repo root
+```
 
 ---
 

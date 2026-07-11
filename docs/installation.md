@@ -89,6 +89,26 @@ docker compose build ml4t    # ~45 min on x86, ~15 min on ARM64
 
 ---
 
+## Verify Your Installation
+
+Before opening any notebook, run the one command that confirms every required
+library imports and the runtime is wired up correctly:
+
+```bash
+# Docker (recommended)
+docker compose run --rm ml4t python scripts/verify_installation.py
+
+# Local uv
+uv run python scripts/verify_installation.py
+```
+
+It prints a `PASS`/`FAIL` line for each component — core libraries, PyTorch and
+CUDA, repo-root imports, plotting, and your data path — followed by a summary.
+**If every line says PASS, you are ready.** If a line says FAIL, it names the
+missing piece; see [Troubleshooting](#troubleshooting) below.
+
+---
+
 ## Platform-Specific Setup
 
 ### Ubuntu / Linux
@@ -400,9 +420,10 @@ cd machine-learning-for-trading
 # Install all dependencies (creates .venv/, installs ~300 packages)
 uv sync
 
-# Copy environment template and add API keys
+# Copy environment template (defaults work as-is; no editing needed to start)
 cp .env.example .env
-# Edit .env — see data/README.md for API key instructions
+# API keys are optional and only needed for specific datasets later —
+# see data/README.md when a chapter asks for one.
 
 # Verify
 uv run python -c "import polars, torch, lightgbm; print('Ready')"
