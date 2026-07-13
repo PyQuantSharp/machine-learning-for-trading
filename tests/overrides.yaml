@@ -220,11 +220,15 @@
     EPOCHS: 5
     MAX_SYMBOLS: 5
   timeout: 300
-06_strategy_definition/01_cv_foundations:
+06_strategy_definition/01_where_ideas_come_from:
+  parameters:
+    MIN_NAMES: 20  # test-data ETF universe is 24 names; production default (30) skips every month
+  timeout: 180
+06_strategy_definition/02_cv_foundations:
   parameters:
     N_VIZ: 100
   timeout: 180
-06_strategy_definition/02_case_study_overview:
+06_strategy_definition/03_case_study_overview:
   timeout: 180
 07_defining_the_learning_task/01_data_quality_diagnostics:
   parameters:
