@@ -62,15 +62,18 @@ RUN /opt/ml4t/bin/pip install --no-cache-dir pip setuptools wheel && \
     fi
 RUN /opt/ml4t/bin/pip freeze | grep -E '^(torch|torchaudio|torchvision)==' > /tmp/ml4t-constraints.txt
 
-# Install ml4t libraries from PyPI
-# --pre allows pre-release versions
+# Install ml4t libraries from PyPI, pinned to the exact versions in uv.lock so the
+# image reproduces the environment readers get from `uv sync` (and CI tests what the
+# lock ships). These are pre-only packages, so a floating `>=` here silently drifts
+# to the latest pre-release at build time (that is how the image fell behind the lock).
+# KEEP IN SYNC WITH uv.lock - bump these `==` pins whenever the lock bumps a ml4t lib.
 RUN /opt/ml4t/bin/pip install --no-cache-dir --pre \
-    "ml4t-data>=0.1.0b15" \
-    "ml4t-diagnostic>=0.1.0b19" \
-    "ml4t-engineer>=0.1.0b8" \
-    "ml4t-live>=0.1.0b3" \
-    "ml4t-backtest>=0.1.0b16" \
-    "ml4t-models>=0.1.0a1"
+    "ml4t-data==0.1.0b15" \
+    "ml4t-diagnostic==0.1.0b22" \
+    "ml4t-engineer==0.1.0b8" \
+    "ml4t-live==0.1.0b3" \
+    "ml4t-backtest==0.1.0b20" \
+    "ml4t-models==0.1.0a4"
 
 # amd64 only: Install CUDA toolkit (nvcc + headers) for building LightGBM with CUDA
 # Minimal install: nvcc-12.6 + runtime dev headers (12.4 not packaged for Ubuntu 24.04)
