@@ -1,15 +1,20 @@
 # Dependabot configuration for the ML4T companion repository.
 #
 # This repo is an educational companion to the book — readers clone it and run
-# notebooks locally; it is not a deployed service. We therefore keep Dependabot
-# to SECURITY updates only, and batch them:
-#   - open-pull-requests-limit: 0 disables routine version-bump PRs. Security
-#     updates are unaffected (they use a separate internal limit), so genuine
-#     vulnerability fixes still arrive.
-#   - the `groups` block collapses all security updates into a single PR instead
-#     of one-per-package, on a monthly cadence, to avoid churn.
-# The dependency lock is canonical in the private code repo and mirrored here, so
-# updates are reviewed and batched rather than merged piecemeal on this mirror.
+# notebooks locally; it is not a deployed service. The dependency lock is
+# canonical in the private code repo and mirrored here, so a Dependabot PR
+# against this mirror would fork the lock and be overwritten on the next sync.
+#
+# Policy: ALERTS-ONLY. We keep Dependabot *alerts* enabled (the Security tab
+# surfaces new advisories so we can batch-refresh canonically), but we do NOT
+# let Dependabot open PRs against this mirror:
+#   - Automated security-update PRs are disabled at the repository level
+#     (Settings → Code security → Dependabot security updates = off). That
+#     toggle — not this file — is what previously generated the recurring
+#     grouped security PRs; a repo config file cannot suppress them.
+#   - open-pull-requests-limit: 0 additionally disables routine version-bump PRs.
+# Dependency updates are reviewed and batched in the canonical code repo, then
+# the lock is mirrored here — never merged piecemeal on this mirror.
 version: 2
 updates:
   - package-ecosystem: "uv"
@@ -17,8 +22,3 @@ updates:
     schedule:
       interval: "monthly"
     open-pull-requests-limit: 0
-    groups:
-      security:
-        applies-to: "security-updates"
-        patterns:
-          - "*"
