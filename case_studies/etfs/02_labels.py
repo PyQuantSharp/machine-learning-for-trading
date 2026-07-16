@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.19.1
+#       jupytext_version: 1.19.3
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -23,9 +23,9 @@
 # ## Learning Objectives
 #
 # - Compute regression labels at 21-day (primary) and 5-day (variant) horizons
-# - Construct cross-sectional quintile labels for relative ranking prediction
-# - Filter to eligible ETFs before computing quintiles (point-in-time)
-# - Evaluate label quality: class balance, IC of raw momentum baseline
+# - Diagnose label autocorrelation induced by overlapping forward windows
+# - Evaluate label quality: IC of a raw momentum baseline with HAC-adjusted
+#   significance, measured on train+validation data only
 # - Generate walk-forward CV configuration from `setup.yaml`
 #
 # ## Book Reference
@@ -34,16 +34,20 @@
 #
 # ## Prerequisites
 #
-# - [`01_feasibility_analysis`](01_feasibility_analysis.ipynb) must have been run (produces `eligibility.csv`)
 # - ETF data available via `load_etfs()`
+# - `config/setup.yaml` (defines the primary/variant labels, CV splits, and the
+#   sealed holdout window used to scope the baseline IC)
 
 # %%
 """ETFs: Label Engineering."""
 
 import warnings
+from datetime import date
 
 import numpy as np
 import polars as pl
+import yaml
+from ml4t.diagnostic.metrics import compute_ic_hac_stats
 
 from data import load_etfs
 from utils.modeling import get_cv_config
@@ -54,24 +58,16 @@ warnings.filterwarnings("ignore")
 CASE_DIR = get_case_study_dir("etfs")
 LABELS_DIR = CASE_DIR / "labels"
 
-
-def as_float(value: object | None) -> float | None:
-    """Convert Polars scalar outputs to plain float for summaries."""
-    if value is None:
-        return None
-    return float(str(value))
-
-
 # %%
 # Production defaults — Papermill injects overrides for CI
 
 # %% [markdown]
 # ## 1. Load Data
 #
-# Load ETF prices and point-in-time eligibility. The eligibility table
-# ensures quintile labels are computed only on ETFs that were tradable at
-# each decision date, avoiding inflation of the cross-section breadth
-# in early years.
+# Load adjusted ETF prices. The forward-return labels are computed per symbol,
+# so no cross-sectional eligibility filter is applied here — point-in-time
+# eligibility (`eligibility.csv` from `01_feasibility_analysis`) is enforced
+# downstream in `03_financial_features`, where the trainable panel is assembled.
 
 # %%
 prices = (
@@ -80,14 +76,17 @@ prices = (
     .sort(["symbol", "timestamp"])
 )
 
-# Load eligibility table from 01_feasibility_analysis.py
-eligibility = pl.read_csv(CASE_DIR / "eligibility.csv")
+# Holdout boundary: the baseline IC below is measured on train+validation data
+# only, so the sealed holdout is never used to set feature-engineering
+# expectations.
+setup = yaml.safe_load((CASE_DIR / "config" / "setup.yaml").read_text())
+holdout_start = setup["evaluation"]["holdout_start"]
 
 n_assets = prices["symbol"].n_unique()
 date_range = f"{prices['timestamp'].min()} to {prices['timestamp'].max()}"
 print(f"ETF Universe: {n_assets} assets, {len(prices):,} rows")
 print(f"Date range: {date_range}")
-print(f"Eligibility: {len(eligibility):,} (asset, year) pairs")
+print(f"Holdout start (sealed): {holdout_start}")
 
 # %% [markdown]
 # **Note**: The `close` column from `load_etfs()` is adjusted for splits and
@@ -96,14 +95,11 @@ print(f"Eligibility: {len(eligibility):,} (asset, year) pairs")
 # %% [markdown]
 # ## 2. Label Functions
 #
-# Two label types:
-#
-# 1. **Regression** (`fwd_ret_Nd`): Simple forward return over $N$ trading days.
-#    Non-overlapping at monthly cadence avoids serial correlation in targets.
-#
-# 2. **Quintile classification** (`fwd_quintile_Nd`): Cross-sectional quintile of
-#    forward returns. Ranks ETFs relative to peers at each date. Computed only
-#    on eligible ETFs to keep quintile boundaries meaningful.
+# **Regression** (`fwd_ret_Nd`): simple close-to-close forward return over $N$
+# trading days. Sampled daily, consecutive labels overlap by $N-1$ days, which
+# induces the serial correlation quantified in Section 4.1 and handled with HAC
+# adjustment in the baseline IC (Section 5). The primary label is the 21-day
+# horizon (monthly rebalancing); the 5-day variant tests a weekly horizon.
 
 
 # %%
@@ -173,11 +169,20 @@ for lag in acf_lags:
 # The IC of raw 126-day momentum against each label type sets the bar
 # that engineered features must clear.
 
+
 # %%
-# Compute raw 126d momentum as baseline signal
-baseline_df = labels_df.with_columns(
-    (pl.col("close") / pl.col("close").shift(126).over("symbol") - 1).alias("raw_mom_126d")
-).drop_nulls(subset=["raw_mom_126d", "fwd_ret_21d"])
+# Baseline signal: raw 126d momentum. Restricted to train+validation rows
+# (timestamp < holdout_start) so this expectation-setting diagnostic never
+# reads the sealed holdout.
+def baseline_frame(label_col: str) -> pl.DataFrame:
+    """126d momentum vs `label_col`, pre-holdout rows only."""
+    return (
+        labels_df.with_columns(
+            (pl.col("close") / pl.col("close").shift(126).over("symbol") - 1).alias("raw_mom_126d")
+        )
+        .filter(pl.col("timestamp") < date.fromisoformat(holdout_start))
+        .drop_nulls(subset=["raw_mom_126d", label_col])
+    )
 
 
 # IC = rank correlation between signal and label
@@ -202,35 +207,41 @@ def compute_ic_by_date(df: pl.DataFrame, signal_col: str, label_col: str) -> pl.
     return ic_by_date
 
 
-ic_21d = compute_ic_by_date(baseline_df, "raw_mom_126d", "fwd_ret_21d")
-
-# Also compute for 5d label
-baseline_5d = labels_df.with_columns(
-    (pl.col("close") / pl.col("close").shift(126).over("symbol") - 1).alias("raw_mom_126d")
-).drop_nulls(subset=["raw_mom_126d", "fwd_ret_5d"])
-ic_5d = compute_ic_by_date(baseline_5d, "raw_mom_126d", "fwd_ret_5d")
-
-ic_21d_mean = as_float(ic_21d["ic"].mean()) if len(ic_21d) > 0 else None
-ic_5d_mean = as_float(ic_5d["ic"].mean()) if len(ic_5d) > 0 else None
+ic_21d = compute_ic_by_date(baseline_frame("fwd_ret_21d"), "raw_mom_126d", "fwd_ret_21d")
+ic_5d = compute_ic_by_date(baseline_frame("fwd_ret_5d"), "raw_mom_126d", "fwd_ret_5d")
 
 
-def _fmt_ic(mean, ic_series):
-    if mean is None or len(ic_series) == 0:
+def fmt_ic(ic_df: pl.DataFrame, horizon: int) -> str:
+    """Mean IC with Newey-West HAC-adjusted significance.
+
+    The daily-sampled IC series inherits the label's overlap autocorrelation
+    (Section 4.1), so the naive t-stat overstates significance. HAC (Bartlett
+    kernel, lag = horizon - 1) corrects for it.
+    """
+    ic_clean = ic_df.drop_nulls(subset=["ic"])
+    if ic_clean.height == 0:
         return "N/A (insufficient cross-section)"
-    t = mean / (ic_series.std() / np.sqrt(len(ic_series)))
-    return f"mean={mean:.4f}, t-stat={t:.2f}"
+    stats = compute_ic_hac_stats(ic_clean, ic_col="ic", label_horizon=horizon)
+    return (
+        f"mean={stats['mean_ic']:.4f}, HAC t={stats['t_stat']:.2f} "
+        f"(naive t={stats['naive_t_stat']:.2f}, lag={stats['effective_lags']}), "
+        f"p={stats['p_value']:.3f}"
+    )
 
 
-print("Baseline IC (raw 126d momentum):")
-print(f"  vs fwd_ret_21d: {_fmt_ic(ic_21d_mean, ic_21d['ic'])}")
-print(f"  vs fwd_ret_5d:  {_fmt_ic(ic_5d_mean, ic_5d['ic'])}")
+print(f"Baseline IC (raw 126d momentum, train+val only, < {holdout_start}):")
+print(f"  vs fwd_ret_21d: {fmt_ic(ic_21d, 21)}")
+print(f"  vs fwd_ret_5d:  {fmt_ic(ic_5d, 5)}")
 
 # %% [markdown]
 # **Interpretation**: The baseline IC sets expectations for downstream feature
-# engineering. The IC range for 126-day momentum against monthly returns is
-# consistent with the cross-asset momentum literature (Moskowitz, Ooi, and
-# Pedersen 2012). The 5-day label IC helps assess whether weekly rebalancing
-# could improve signal capture despite higher turnover costs.
+# engineering. Because daily labels at a 21-day horizon overlap by 20 days, the
+# naive t-stat is inflated; the HAC-adjusted t-stat (Newey-West, lag = horizon
+# - 1) is the honest significance test and is materially smaller. The IC level
+# for 126-day momentum against monthly returns is consistent with the
+# cross-asset momentum literature (Moskowitz, Ooi, and Pedersen 2012). The 5-day
+# label IC helps assess whether weekly rebalancing could improve signal capture
+# despite higher turnover costs.
 
 # %% [markdown]
 # ## 6. Save Artifacts
@@ -269,7 +280,10 @@ print(f"Saved cv_config.json (n_splits={cv_config.n_splits})")
 # 1. **Two regression horizons** (21d primary, 5d variant) enable horizon
 #    sensitivity analysis: if IC is higher at 5d, weekly rebalancing may
 #    improve signal capture despite higher costs
-# 2. **Baseline IC** of raw 126d momentum establishes the bar for Ch8 features
+# 2. **Baseline IC** of raw 126d momentum sets the bar for Ch8 features — but
+#    only under HAC-adjusted significance: the 20-day label overlap inflates the
+#    naive t-stat, and the 21d baseline is not significant after correction.
+#    Engineered features must clear this honest bar, not the illusory one
 # 3. **CV config** saved from `setup.yaml` ensures downstream chapters use
 #    identical walk-forward splits
 #

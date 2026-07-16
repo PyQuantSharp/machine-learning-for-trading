@@ -37,6 +37,17 @@ repos:
         types: [python]
         exclude: \.ipynb$
 
+      # Load gate: a paired .ipynb must agree with its .py, or JupyterLab's
+      # jupytext contents manager refuses to open it and the reader gets a
+      # "File Load Error" instead of a notebook (public issue #372 — papermill
+      # leaves an empty `tags: []` on every cell that the .py does not carry).
+      # Only checks the staged pairs. See scripts/check_notebook_pair_sync.py.
+      - id: notebook-pair-sync
+        name: notebook/py pair opens in JupyterLab
+        language: system
+        entry: python3 scripts/check_notebook_pair_sync.py
+        files: \.(ipynb|py)$
+
       # Sync gate: a stamped notebook must be its CURRENT .py executed in a
       # production run. Fails if any provenance-stamped .ipynb is stale (its
       # paired .py changed since execution) or was committed from a TEST-mode
